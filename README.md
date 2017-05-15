@@ -26,7 +26,7 @@ The first transformation joins all statistics between playerIDs and birthYears a
 **Output**
 
 | playerID  | yearID |`B_G`|`B_AB`|`B_R`|`B_H`| ... |
-|===========|========|=====|======|=====|=====|=====|
+|-----------|--------|-----|------|-----|-----|-----|
 | aaronha01 |   1954 | 122 |  468 |  58 | 131 | ... |
 | aaronha01 |   1955 | 153 |  602 | 105 | 189 | ... |
 | aaronha01 |   1956 | 153 |  609 | 106 | 200 | ... |
@@ -50,7 +50,7 @@ And generates the appropriate file based on the gui selections made.
 [`last_four_years_playerID_H.csv`](transform-2_four-seasons_jia/last_four_years_playerID_H.csv)
 
 |  playerID | yearID | season1 | season2 | season3 | season4 |
-|===========|========|=========|=========|=========|=========|
+|-----------|--------|---------|---------|---------|---------|
 | blowemi01 |   1990 |      27 |       7 |      14 |     106 |
 | blowemi01 |   1991 |       7 |      14 |     106 |      78 |
 | blowemi01 |   1992 |      14 |     106 |      78 |     113 |
@@ -70,7 +70,7 @@ Finally, we've added a rudimentary age using the Master.csv data's birthYear dif
 [`aH.csv`](transform-3_add-age_cole/aH.csv)
 
 |  playerID | age | season1 | season2 | season3 | season4 |
-|===========|=====|=========|=========|=========|=========|
+|-----------|-----|---------|---------|---------|---------|
 | blowemi01 |  25 |      27 |       7 |      14 |     106 |
 | blowemi01 |  26 |       7 |      14 |     106 |      78 |
 | blowemi01 |  27 |      14 |     106 |      78 |     113 |
