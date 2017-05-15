@@ -11,17 +11,17 @@ The [formula is referenced from Baseball Reference](http://www.baseball-referenc
 > Established level for that statistic = (last season*3+second to last season*2+third to last season)/6.
 > Additionally, the established level should not be below 3/4 of the total in the most recent season
 
-Our goal, is to improve this established statistic.
+**Our goal is to improve this established statistic.**
 
 ## Data Transformation
 
 Baseball statistical data is based off the [baseballdatabank provided by chadwickbureau](https://github.com/chadwickbureau/baseballdatabank).
 
-We reference these files such as `./Master.csv`, `./Batting.csv`, etc in the codebase, but we are not including them.
+We reference these files such as `./Master.csv`, `./Batting.csv`, etc in the codebase, but we do not include them in every source file.
 
 ### Transformation 1
 
-The first transformation joins all statistics between playerIDs and birthYears available from Master.csv and the stats in the other data files. Then, it also aggregates player-years with multiple stints (So, if player hits 30 on one team, switches teams, then hits 10 on next team, we are outputted 40 hits for that player-year entry).
+The first transformation joins all statistics between playerIDs and birthYears available from Master.csv and the stats in the other data files. Then, it also aggregates player-years with multiple stints (So, if player hits 30 on one team, switches teams, then hits 10 on next team, we are outputted 40 hits for that player-year record).
 
 **Output**
 
