@@ -1,80 +1,133 @@
-# DSMPython
-## Frank Giddens
+# CSC 590: Baseball predict fourth season
 
-### How to use DSMPython
+The goal of this project is to use Weka to make a prediction on how a player will perform in their fourth season on any given statistic.
 
-In the command line run the following: python DSMPython.py <argument>
+## Favorite Toy Predictions
 
-DSMPython will generate a file named test.csv
+This project is based off of the formula embedded in the the favorite toy algorithm for predicting the future seasons of a player by using that attribute's previous three seasons.
 
-### Argument List
+The [formula is referenced from Baseball Reference](http://www.baseball-reference.com/bullpen/Favorite_toy) and it looks like this:
+```
+Established level for that statistic = (last season*3+second to last season*2+third to last season)/6. Additionally, the established level should not be below 3/4 of the total in the most recent season
+```
 
-no-stints : Removes all stints higher than 1 without combining them
+Our goal, is to improve this established statistic.
 
-g-max <number> : Sets maximum number of games
+## Data Transformation
 
-g-min <number> : Sets minimum number of games
+Baseball statistical data is based off the [baseballdatabank provided by chadwickbureau](https://github.com/chadwickbureau/baseballdatabank).
 
-ab-max <number> : Sets maximum number of at bats
+We reference these files such as `./Master.csv`, `./Batting.csv`, etc in the codebase, but we are not including them.
 
-ab-min <number> : Sets minimum number of at bats
+### Transformation 1
 
-r-max <number> : Sets maximum number of runs
+The first transformation joins all statistics between playerIDs and birthYears available from Master.csv and the stats in the other data files. Then, it also aggregates player-years with multiple stints (So, if player hits 30 on one team, switches teams, then hits 10 on next team, we are outputted 40 hits for that player-year entry).
 
-r-min <number> : Sets minimum number of runs
+**Output**
 
-h-max <number> : Sets maximum number of hits
+| playerID  | yearID |`B_G`|`B_AB`|`B_R`|`B_H`| ... |
+|===========|========|=====|======|=====|=====|=====|
+| aaronha01 |   1954 | 122 |  468 |  58 | 131 | ... |
+| aaronha01 |   1955 | 153 |  602 | 105 | 189 | ... |
+| aaronha01 |   1956 | 153 |  609 | 106 | 200 | ... |
+| aaronha01 |   1957 | 151 |  615 | 118 | 198 | ... |
 
-h-min <number> : Sets minimum number of hits
+Transformation 1 has been implemented with two solutions, [one in Python by Frank Giddens](transform-1_aggregate-stats_frank), and [another using SQLite commands by Cole Lawrence](./transform-1_aggregate-stats-alt_cole)
 
-2b-max <number> : Sets maximum number of second base runs
+### Transformation 2
 
-2b-min <number> : Sets minimum number of second base runs
+The second tranformation takes the output of the first transformation to
+rotate the data into groups of four consecutive seasons for analysis.
 
-3b-max <number> : Sets maximum number of third base runs
+This has been written as a [Jupyter notebook by Jia](./transform-2_four-seasons_jia/four_seasons.ipynb).
 
-3b-min <number> : Sets minimum number of third base runs
+And generates the appropriate file based on the gui selections made.
 
-hr-max <number> : Sets maximum number of home runs
+![GUI Selection](./transform-2_four-seasons_jia/images/gui-0.png)
 
-hr-min <number> : Sets minimum number of home runs
+**Output**
 
-rbi-max <number> : Sets maximum number of runs batted in
+[`last_four_years_playerID_H.csv`](transform-2_four-seasons_jia/last_four_years_playerID_H.csv)
 
-rbi-min <number> : Sets minimum number of runs batted in
+|  playerID | yearID | season1 | season2 | season3 | season4 |
+|===========|========|=========|=========|=========|=========|
+| blowemi01 |   1990 |      27 |       7 |      14 |     106 |
+| blowemi01 |   1991 |       7 |      14 |     106 |      78 |
+| blowemi01 |   1992 |      14 |     106 |      78 |     113 |
+| blowemi01 |   1993 |     106 |      78 |     113 |      84 |
+| blowemi01 |   1994 |      78 |     113 |      84 |      44 |
+| blowemi01 |   1995 |     113 |      84 |      44 |      97 |
+| hillech01 |   1962 |     166 |      93 |      37 |      69 |
 
-sb-max <number> : Sets maximum number of sacrifice bunts
+### Transformation 3
 
-sb-min <number> : Sets minimum number of sacrifice bunts
+Finally, we've added a rudimentary age using the Master.csv data's birthYear difference from yearID.
 
-cs-max <number> : Sets maximum number of times caught stealing
+[Notes by Cole](transform-3_add-age_cole/)
 
-cs-min <number> : Sets minimum number of times caught stealing
+**Output**
 
-bb-max <number> : Sets maximum number of base on balls
+[`aH.csv`](transform-3_add-age_cole/aH.csv)
 
-bb-min <number> : Sets minimum number of base on balls
+|  playerID | age | season1 | season2 | season3 | season4 |
+|===========|=====|=========|=========|=========|=========|
+| blowemi01 |  25 |      27 |       7 |      14 |     106 |
+| blowemi01 |  26 |       7 |      14 |     106 |      78 |
+| blowemi01 |  27 |      14 |     106 |      78 |     113 |
+| blowemi01 |  28 |     106 |      78 |     113 |      84 |
+| blowemi01 |  29 |      78 |     113 |      84 |      44 |
+| blowemi01 |  30 |     113 |      84 |      44 |      97 |
+| hillech01 |  28 |     166 |      93 |      37 |      69 |
 
-so-max <number> : Sets maximum number of strikeouts
 
-so-min <number> : Sets minimum number of strikeouts
+### Analysis
 
-ibb-max <number> : Sets maximum number of intentional walks
+Using aH with Weka, we generated a MultiLayerPeceptron which predicts the next season slightly better (based on RMSE) than the given favorite toy algorithm.
 
-ibb-min <number> : Sets minimum number of intentional walks
+First, we removed the playerID in Weka since it has no impact on the prediction.
 
-hbp-max <number> : Sets maximum number of times hit by pitch
+> Weka Output by Luke
+```
+=== Run information ===
 
-hbp-min <number> : Sets minimum number of times hit by pitch
+Scheme:       weka.classifiers.functions.MultilayerPerceptron -L 1.0E-4 -M 0.8 -N 500 -V 0 -S 0 -E 20 -H 1
+Relation:     aH-weka.filters.unsupervised.attribute.Remove-R1
+Instances:    15288
+Attributes:   5
+              age
+              season1
+              season2
+              season3
+              season4
+Test mode:    10-fold cross-validation
 
-sh-max <number> : Sets maximum number of sacrifice hits
+=== Cross-validation ===
+=== Summary ===
 
-sh-min <number> : Sets minimum number of sacrifice hits
+Correlation coefficient                  0.787 
+Mean absolute error                     27.0251
+Root mean squared error                 35.2075
+Relative absolute error                 54.5381 %
+Root relative squared error             61.6919 %
+Total Number of Instances               15288
 
-sf-max <number> : Sets maximum number of sacrifice flies
+=== Classifier model (full training set) ===
 
-sf-min <number> : Sets minimum number of sacrifice flies
+Linear Node 0
+    Inputs    Weights
+    Threshold    0.8715162361894145
+    Node 1    -2.401644381414173
+Sigmoid Node 1
+    Inputs    Weights
+    Threshold    -0.4572899491333346
+    Attrib age    0.3634397049893566
+    Attrib season1    -0.22933013948740666
+    Attrib season2    -0.3351816832189221
+    Attrib season3    -1.0542434135515057
+Class 
+    Input
+    Node 0
 
-gidp-max <number> : Sets maximum number of times grounded into double plays
+Time taken to build model: 2.91 seconds
+```
 
-gidp-min <number> : Sets minimum number of times grounded into double plays
