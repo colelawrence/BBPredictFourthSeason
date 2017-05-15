@@ -7,9 +7,9 @@ The goal of this project is to use Weka to make a prediction on how a player wil
 This project is based off of the formula embedded in the the favorite toy algorithm for predicting the future seasons of a player by using that attribute's previous three seasons.
 
 The [formula is referenced from Baseball Reference](http://www.baseball-reference.com/bullpen/Favorite_toy) and it looks like this:
-```
-Established level for that statistic = (last season*3+second to last season*2+third to last season)/6. Additionally, the established level should not be below 3/4 of the total in the most recent season
-```
+
+> Established level for that statistic = (last season*3+second to last season*2+third to last season)/6.
+> Additionally, the established level should not be below 3/4 of the total in the most recent season
 
 Our goal, is to improve this established statistic.
 
